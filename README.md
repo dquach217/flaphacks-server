@@ -1,2 +1,2 @@
 # ProjectFocusBackend
-Backend Flask server for ProjectFocus
+Backend Flask server for FlapHacks
