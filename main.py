@@ -19,10 +19,10 @@ class GCode(db.Model):
     g_code_file = db.Column(db.String(256))
     g_code_name = db.Column(db.String(256))
 
-    def __init__(self, timestamp, svg_file, svg_name):
+    def __init__(self, timestamp, g_code_file, g_code_name):
         self.timestamp = timestamp
-        self.svg_file = g_code_file
-        self.svg_name = g_code_name
+        self.g_code_file = g_code_file
+        self.g_code_name = g_code_name
 
 @app.route('/gcode', methods=['POST'])
 def svg_to_gcode():
@@ -30,6 +30,10 @@ def svg_to_gcode():
     g_code_file=request_json['g_code_file']
     g_code_name=request_json['g_code_name']
     timestamp_data=request_json['time_stamp']
+
+    if ".gcode" not in g_code_file:
+        logging.error("Wrong file extension")
+        return Response("Wrong file extension", status=400)
 
     try:
         query = GCode(
@@ -39,13 +43,11 @@ def svg_to_gcode():
     )
         db.session.add(query)
         db.session.commit()
-
         return Response(status=200)
 
     except KeyError as e:
         logging.error("Missing critical key")
         return Response("Missing critical key/value", status=400)
-
 
 if __name__ == '__main__':
     app.run()
