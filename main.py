@@ -49,5 +49,12 @@ def svg_to_gcode():
         logging.error("Missing critical key")
         return Response("Missing critical key/value", status=400)
 
+@app.route('/retrieve_gcode/<id>')
+def retrieve_gcode(id):
+    result = GCode.query.get(id)
+    if not result:
+        return Response("entry does not exist", status=400)
+    return from_sql(result)
+
 if __name__ == '__main__':
     app.run()
